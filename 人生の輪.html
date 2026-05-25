@@ -1,783 +1,779 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>人生の輪 - バランス診断ツール</title>
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
-
-```
-html, body {
-width: 100%;
-height: 100%;
-overflow-x: hidden;
-}
-
-body {
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
-background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
-min-height: 100vh;
-padding: 0.5rem;
-color: #1e293b;
-}
-
-.container {
-width: 100%;
-margin: 0;
-}
-
-/* Header */
-.header {
-margin-bottom: 1rem;
-}
-
-.header-title h1 {
-font-size: 1.5rem;
-font-weight: 300;
-}
-
-.header-subtitle {
-color: #64748b;
-font-weight: 300;
-margin-top: 0.3rem;
-font-size: 0.75rem;
-display: none;
-}
-
-/* Usage Guide */
-.usage-guide {
-background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-border: 1px solid #fcd34d;
-border-radius: 0.75rem;
-padding: 1rem;
-margin-bottom: 1rem;
-}
-
-.usage-title {
-font-size: 0.9rem;
-font-weight: 600;
-color: #92400e;
-margin-bottom: 0.75rem;
-}
-
-.usage-steps {
-list-style: none;
-display: flex;
-flex-direction: column;
-gap: 0.5rem;
-}
-
-.usage-steps li {
-background: rgba(255, 255, 255, 0.8);
-padding: 0.75rem;
-border-radius: 0.5rem;
-font-size: 0.8rem;
-color: #78350f;
-line-height: 1.4;
-}
-
-.usage-steps strong {
-color: #92400e;
-font-weight: 600;
-}
-
-/* Input Section */
-.input-section {
-background: white;
-border-radius: 0.75rem;
-border: 1px solid #e2e8f0;
-padding: 1rem;
-margin-bottom: 1rem;
-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.input-title {
-font-size: 0.9rem;
-font-weight: 600;
-color: #1e293b;
-margin-bottom: 1rem;
-text-transform: uppercase;
-letter-spacing: 0.05em;
-}
-
-.input-grid {
-display: grid;
-grid-template-columns: 1fr;
-gap: 1rem;
-margin-bottom: 1rem;
-}
-
-.input-item {
-display: flex;
-flex-direction: column;
-gap: 0.75rem;
-}
-
-.input-header {
-display: flex;
-align-items: center;
-gap: 0.5rem;
-}
-
-.input-icon {
-font-size: 1.25rem;
-line-height: 1;
-}
-
-.input-label {
-font-size: 0.8rem;
-font-weight: 600;
-color: #1e293b;
-}
-
-.score-inputs {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 0.75rem;
-}
-
-.score-group {
-flex: 1;
-}
-
-.score-label {
-display: block;
-font-size: 0.65rem;
-font-weight: 600;
-color: #64748b;
-margin-bottom: 0.4rem;
-text-transform: uppercase;
-letter-spacing: 0.05em;
-}
-
-select {
-width: 100%;
-padding: 0.6rem 0.8rem;
-border: 1px solid #cbd5e1;
-border-radius: 0.4rem;
-font-size: 0.9rem;
-font-weight: 600;
-color: #1e293b;
-background: white;
-cursor: pointer;
-transition: all 0.2s ease;
-appearance: none;
-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231e293b' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-background-repeat: no-repeat;
-background-position: right 0.6rem center;
-padding-right: 1.8rem;
-}
-
-select:hover {
-border-color: #94a3b8;
-}
-
-select:focus {
-outline: none;
-box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.reset-button {
-width: 100%;
-padding: 0.7rem 1rem;
-border: 1px solid #cbd5e1;
-border-radius: 0.4rem;
-background: white;
-color: #64748b;
-font-size: 0.8rem;
-font-weight: 600;
-text-transform: uppercase;
-letter-spacing: 0.05em;
-cursor: pointer;
-transition: all 0.2s ease;
-}
-
-.reset-button:hover {
-background: #f1f5f9;
-color: #1e293b;
-border-color: #94a3b8;
-}
-
-/* Chart Section */
-.chart-section {
-background: white;
-border-radius: 0.75rem;
-border: 1px solid #e2e8f0;
-padding: 0.75rem;
-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.chart-title {
-font-size: 1rem;
-font-weight: 600;
-color: #1e293b;
-margin-bottom: 0.3rem;
-}
-
-.chart-wrapper {
-position: relative;
-width: 100%;
-aspect-ratio: 1;
-min-height: 400px;
-margin-bottom: 0.75rem;
-}
-
-.chart-container {
-position: absolute;
-inset: 0;
-display: flex;
-justify-content: center;
-align-items: center;
-width: 100%;
-height: 100%;
-}
-
-svg {
-width: 100%;
-height: 100%;
-}
-
-/* Stats Row */
-.stats-row {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 0.75rem;
-margin-bottom: 0.5rem;
-}
-
-.stat-card {
-background: white;
-border: 1px solid #e2e8f0;
-border-radius: 0.5rem;
-padding: 0.75rem;
-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.stat-card.blue {
-background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-border-color: #bfdbfe;
-}
-
-.stat-label {
-font-size: 0.65rem;
-font-weight: 600;
-color: #0369a1;
-text-transform: uppercase;
-letter-spacing: 0.05em;
-margin-bottom: 0.3rem;
-}
-
-.stat-value {
-font-size: 1.5rem;
-font-weight: 300;
-color: #0c4a6e;
-}
-
-.stat-value span {
-font-size: 0.7rem;
-margin-left: 0.1rem;
-}
-
-.stat-desc {
-font-size: 0.6rem;
-color: #0284c7;
-margin-top: 0.2rem;
-display: none;
-}
-
-.stat-card.slate {
-background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-border-color: #cbd5e1;
-}
-
-.stat-card.slate .stat-label {
-color: #475569;
-}
-
-.stat-card.slate .stat-value {
-color: #1e293b;
-}
-
-.stat-card.slate .stat-desc {
-color: #64748b;
-}
-
-.legend {
-display: flex;
-justify-content: center;
-gap: 1.5rem;
-padding-top: 0.3rem;
-border-top: 1px solid #e2e8f0;
-flex-wrap: wrap;
-font-size: 0.75rem;
-}
-
-.legend-item {
-display: flex;
-align-items: center;
-gap: 0.4rem;
-}
-
-.legend-dot {
-width: 0.6rem;
-height: 0.6rem;
-border-radius: 50%;
-background: #3b82f6;
-}
-
-.legend-dot.ideal {
-background: transparent;
-border: 1.5px dashed #fbbf24;
-}
-
-.legend-text {
-font-size: 0.7rem;
-color: #64748b;
-}
-
-/* Footer */
-.footer {
-margin-top: 2rem;
-padding: 1rem 0;
-border-top: 1px solid #e2e8f0;
-text-align: center;
-color: #94a3b8;
-font-size: 0.75rem;
-line-height: 1.4;
-}
-
-/* Desktop - enhance styling */
-@media (min-width: 769px) {
-body {
-padding: 1rem;
-}
-
-.container {
-max-width: 600px;
-margin: 0 auto;
-}
-
-.header {
-margin-bottom: 2rem;
-}
-
-.header-title h1 {
-font-size: 2.25rem;
-}
-
-.header-subtitle {
-display: block;
-font-size: 0.95rem;
-margin-top: 0.5rem;
-}
-
-.usage-guide {
-padding: 1.5rem;
-margin-bottom: 2rem;
-}
-
-.usage-title {
-font-size: 1rem;
-margin-bottom: 1rem;
-}
-
-.usage-steps {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-gap: 1rem;
-}
-
-.usage-steps li {
-padding: 1rem;
-font-size: 0.875rem;
-}
-
-.input-section {
-padding: 2rem;
-margin-bottom: 2rem;
-}
-
-.input-title {
-font-size: 1.25rem;
-margin-bottom: 2rem;
-font-size: 0.95rem;
-}
-
-.input-grid {
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-gap: 2rem;
-margin-bottom: 2rem;
-}
-
-.input-item {
-gap: 1rem;
-}
-
-.input-header {
-gap: 0.75rem;
-}
-
-.input-icon {
-font-size: 1.75rem;
-}
-
-.input-label {
-font-size: 0.875rem;
-}
-
-.score-inputs {
-display: flex;
-gap: 1rem;
-grid-template-columns: unset;
-}
-
-.score-group {
-flex: 1;
-}
-
-.score-label {
-font-size: 0.7rem;
-margin-bottom: 0.5rem;
-}
-
-select {
-padding: 0.75rem 1rem;
-font-size: 1rem;
-background-position: right 0.75rem center;
-padding-right: 2rem;
-}
-
-.reset-button {
-padding: 0.875rem 1.5rem;
-font-size: 0.875rem;
-}
-
-.chart-section {
-padding: 2rem;
-}
-
-.chart-title {
-margin-bottom: 2rem;
-}
-
-.chart-wrapper {
-min-height: 700px;
-margin-bottom: 1rem;
-}
-
-.stats-row {
-gap: 1rem;
-margin-bottom: 0.5rem;
-max-width: 600px;
-}
-
-.stat-card {
-padding: 1.5rem;
-}
-
-.stat-label {
-font-size: 0.75rem;
-}
-
-.stat-value {
-font-size: 2.25rem;
-}
-
-.stat-value span {
-font-size: 0.7rem;
-}
-
-.stat-desc {
-display: block;
-}
-
-.legend {
-padding-top: 2rem;
-gap: 2rem;
-}
-
-.footer {
-display: block;
-max-width: 600px;
-margin: 4rem auto 0;
-padding: 2rem 0;
-border-top: 1px solid #e2e8f0;
-text-align: center;
-color: #94a3b8;
-font-size: 0.875rem;
-}
-}
-</style>
-```
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>人生の輪 - バランス診断ツール</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
+            min-height: 100vh;
+            padding: 0.5rem;
+            color: #1e293b;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+
+        .header-subtitle {
+            color: #64748b;
+            font-weight: 300;
+            margin-top: 0.3rem;
+            font-size: 0.75rem;
+            display: none;
+        }
+
+        /* Usage Guide */
+        .usage-guide {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #fcd34d;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .usage-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.75rem;
+        }
+
+        .usage-steps {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .usage-steps li {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            color: #78350f;
+            line-height: 1.4;
+        }
+
+        .usage-steps strong {
+            color: #92400e;
+            font-weight: 600;
+        }
+
+        /* Input Section */
+        .input-section {
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .input-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-icon {
+            font-size: 1.25rem;
+            line-height: 1;
+        }
+
+        .input-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .score-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .score-group {
+            flex: 1;
+        }
+
+        .score-label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.4rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: menulist;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231e293b' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.6rem center;
+            padding-right: 1.8rem;
+        }
+
+        select:hover {
+            border-color: #94a3b8;
+        }
+
+        select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .reset-button {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.4rem;
+            background: white;
+            color: #64748b;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .reset-button:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+            border-color: #94a3b8;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.3rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            min-height: 400px;
+            margin-bottom: 0.75rem;
+        }
+
+        .chart-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card.blue {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-color: #bfdbfe;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #0369a1;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #0c4a6e;
+        }
+
+        .stat-value span {
+            font-size: 0.7rem;
+            margin-left: 0.1rem;
+        }
+
+        .stat-desc {
+            font-size: 0.6rem;
+            color: #0284c7;
+            margin-top: 0.2rem;
+            display: none;
+        }
+
+        .stat-card.slate {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-color: #cbd5e1;
+        }
+
+        .stat-card.slate .stat-label {
+            color: #475569;
+        }
+
+        .stat-card.slate .stat-value {
+            color: #1e293b;
+        }
+
+        .stat-card.slate .stat-desc {
+            color: #64748b;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding-top: 0.3rem;
+            border-top: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            font-size: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-dot {
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            background: #3b82f6;
+        }
+
+        .legend-dot.ideal {
+            background: transparent;
+            border: 1.5px dashed #fbbf24;
+        }
+
+        .legend-text {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 2rem;
+            padding: 1rem 0;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        /* Desktop - enhance styling */
+        @media (min-width: 769px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .header {
+                margin-bottom: 2rem;
+            }
+
+            .header-title h1 {
+                font-size: 2.25rem;
+            }
+
+            .header-subtitle {
+                display: block;
+                font-size: 0.95rem;
+                margin-top: 0.5rem;
+            }
+
+            .usage-guide {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .usage-title {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .usage-steps {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+
+            .usage-steps li {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+
+            .input-section {
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .input-title {
+                font-size: 1.25rem;
+                margin-bottom: 2rem;
+                font-size: 0.95rem;
+            }
+
+            .input-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .input-item {
+                gap: 1rem;
+            }
+
+            .input-header {
+                gap: 0.75rem;
+            }
+
+            .input-icon {
+                font-size: 1.75rem;
+            }
+
+            .input-label {
+                font-size: 0.875rem;
+            }
+
+            .score-inputs {
+                display: flex;
+                gap: 1rem;
+                grid-template-columns: unset;
+            }
+
+            .score-group {
+                flex: 1;
+            }
+
+            .score-label {
+                font-size: 0.7rem;
+                margin-bottom: 0.5rem;
+            }
+
+            select {
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+                background-position: right 0.75rem center;
+                padding-right: 2rem;
+            }
+
+            .reset-button {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.875rem;
+            }
+
+            .chart-section {
+                padding: 2rem;
+            }
+
+            .chart-title {
+                margin-bottom: 2rem;
+            }
+
+            .chart-wrapper {
+                min-height: 700px;
+                margin-bottom: 1rem;
+            }
+
+            .stats-row {
+                gap: 1rem;
+                margin-bottom: 0.5rem;
+                max-width: 600px;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .stat-value {
+                font-size: 2.25rem;
+            }
+
+            .stat-value span {
+                font-size: 0.7rem;
+            }
+
+            .stat-desc {
+                display: block;
+            }
+
+            .legend {
+                padding-top: 2rem;
+                gap: 2rem;
+            }
+
+            .footer {
+                display: block;
+                max-width: 600px;
+                margin: 4rem auto 0;
+                padding: 2rem 0;
+                border-top: 1px solid #e2e8f0;
+                text-align: center;
+                color: #94a3b8;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<!-- Header -->
-<div class="header">
-<div class="header-title">
-<h1>人生の<span>輪</span></h1>
-</div>
-<p class="header-subtitle">
-8つの人生領域でバランスを可視化 | 現在と理想のギャップを把握
-</p>
-</div>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">
+                <h1>人生の<span>輪</span></h1>
+            </div>
+            <p class="header-subtitle">
+                8つの人生領域でバランスを可視化 | 現在と理想のギャップを把握
+            </p>
+        </div>
 
-```
-<!-- Usage Guide -->
-<div class="usage-guide">
-<h2 class="usage-title">📖 使い方</h2>
-<ol class="usage-steps">
-<li><strong>スコア入力：</strong> 下のセクションで、各カテゴリの「現在」と「理想」のスコアを0～10で選択します</li>
-<li><strong>リアルタイム更新：</strong> 入力すると、バランススコアとチャートが自動で更新されます</li>
-<li><strong>チャート確認：</strong> 画面下部のレーダーチャートで、現在（青）と理想（黄）を可視化できます</li>
-<li><strong>分析：</strong> バランススコアが高いほど、現在と理想が近い状態です。改善したい領域を見つけましょう</li>
-</ol>
-</div>
+        <!-- Usage Guide -->
+        <div class="usage-guide">
+            <h2 class="usage-title">📖 使い方</h2>
+            <ol class="usage-steps">
+                <li><strong>スコア入力：</strong> 下のセクションで、各カテゴリの「現在」と「理想」のスコアを0～10で選択します</li>
+                <li><strong>リアルタイム更新：</strong> 入力すると、バランススコアとチャートが自動で更新されます</li>
+                <li><strong>チャート確認：</strong> 画面下部のレーダーチャートで、現在（青）と理想（黄）を可視化できます</li>
+                <li><strong>分析：</strong> バランススコアが高いほど、現在と理想が近い状態です。改善したい領域を見つけましょう</li>
+            </ol>
+        </div>
 
-<!-- Input Section -->
-<div class="input-section">
-<h2 class="input-title">スコア入力</h2>
+        <!-- Input Section -->
+        <div class="input-section">
+            <h2 class="input-title">スコア入力</h2>
+            
+            <div class="input-grid" id="inputGrid"></div>
 
-<div class="input-grid" id="inputGrid"></div>
+            <button class="reset-button" type="button" onclick="window.resetScores()">すべてリセット</button>
+        </div>
 
-<button class="reset-button" type="button" onclick="window.resetScores()">すべてリセット</button>
-</div>
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <h2 class="chart-title">現在 vs 理想のバランス</h2>
+            
+            <div class="chart-wrapper">
+                <div class="chart-container">
+                    <svg id="radarChart" viewBox="-50 -50 500 500" preserveAspectRatio="xMidYMid meet"></svg>
+                </div>
+            </div>
 
-<!-- Chart Section -->
-<div class="chart-section">
-<h2 class="chart-title">現在 vs 理想のバランス</h2>
+            <div class="stats-row">
+                <div class="stat-card blue">
+                    <div class="stat-label">バランススコア</div>
+                    <div class="stat-value"><span id="balanceScore">100</span><span>%</span></div>
+                    <div class="stat-desc">現在と理想のギャップ</div>
+                </div>
+                <div class="stat-card slate">
+                    <div class="stat-label">現在の平均スコア</div>
+                    <div class="stat-value"><span id="averageScore">5</span><span>/10</span></div>
+                    <div class="stat-desc">全8領域の平均値</div>
+                </div>
+            </div>
 
-<div class="chart-wrapper">
-<div class="chart-container">
-<svg id="radarChart" viewBox="-50 -50 500 500" preserveAspectRatio="xMidYMid meet"></svg>
-</div>
-</div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-dot"></div>
+                    <span class="legend-text">現在</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot ideal"></div>
+                    <span class="legend-text">理想</span>
+                </div>
+            </div>
+        </div>
 
-<div class="stats-row">
-<div class="stat-card blue">
-<div class="stat-label">バランススコア</div>
-<div class="stat-value"><span id="balanceScore">100</span><span>%</span></div>
-<div class="stat-desc">現在と理想のギャップ</div>
-</div>
-<div class="stat-card slate">
-<div class="stat-label">現在の平均スコア</div>
-<div class="stat-value"><span id="averageScore">5</span><span>/10</span></div>
-<div class="stat-desc">全8領域の平均値</div>
-</div>
-</div>
+        <!-- Footer -->
+        <div class="footer">
+            <p>人生の8つの領域でバランスを保つことで、より充実した日々を送りましょう</p>
+        </div>
+    </div>
 
-<div class="legend">
-<div class="legend-item">
-<div class="legend-dot"></div>
-<span class="legend-text">現在</span>
-</div>
-<div class="legend-item">
-<div class="legend-dot ideal"></div>
-<span class="legend-text">理想</span>
-</div>
-</div>
-</div>
+    <script>
+        const categories = [
+            { key: 'work', label: '仕事、キャリア', icon: '💼' },
+            { key: 'hobby', label: '趣味、遊び', icon: '🎨' },
+            { key: 'money', label: 'お金', icon: '💰' },
+            { key: 'friends', label: '友人関係', icon: '👥' },
+            { key: 'family', label: '家族', icon: '👨‍👩‍👧' },
+            { key: 'health', label: '健康', icon: '❤️' },
+            { key: 'mind', label: '心の状態', icon: '🧘' },
+            { key: 'partner', label: '夫婦や大切な人', icon: '💑' },
+        ];
 
-<!-- Footer -->
-<div class="footer">
-<p>人生の8つの領域でバランスを保つことで、より充実した日々を送りましょう</p>
-</div>
-</div>
+        const defaultScores = {
+            work: { current: 0, ideal: 0 },
+            hobby: { current: 0, ideal: 0 },
+            money: { current: 0, ideal: 0 },
+            friends: { current: 0, ideal: 0 },
+            family: { current: 0, ideal: 0 },
+            health: { current: 0, ideal: 0 },
+            mind: { current: 0, ideal: 0 },
+            partner: { current: 0, ideal: 0 },
+        };
 
-<script>
-const categories = [
-{ key: 'work', label: '仕事、キャリア', icon: '💼' },
-{ key: 'hobby', label: '趣味、遊び', icon: '🎨' },
-{ key: 'money', label: 'お金', icon: '💰' },
-{ key: 'friends', label: '友人関係', icon: '👥' },
-{ key: 'family', label: '家族', icon: '👨‍👩‍👧' },
-{ key: 'health', label: '健康', icon: '❤️' },
-{ key: 'mind', label: '心の状態', icon: '🧘' },
-{ key: 'partner', label: '夫婦や大切な人', icon: '💑' },
-];
+        let scores = JSON.parse(JSON.stringify(defaultScores));
 
-const defaultScores = {
-work: { current: 0, ideal: 0 },
-hobby: { current: 0, ideal: 0 },
-money: { current: 0, ideal: 0 },
-friends: { current: 0, ideal: 0 },
-family: { current: 0, ideal: 0 },
-health: { current: 0, ideal: 0 },
-mind: { current: 0, ideal: 0 },
-partner: { current: 0, ideal: 0 },
-};
+        function createInputGrid() {
+            const grid = document.getElementById('inputGrid');
+            grid.innerHTML = '';
 
-let scores = JSON.parse(JSON.stringify(defaultScores));
+            categories.forEach(cat => {
+                const item = document.createElement('div');
+                item.className = 'input-item';
+                item.innerHTML = `
+                    <div class="input-header">
+                        <span class="input-icon">${cat.icon}</span>
+                        <label class="input-label">${cat.label}</label>
+                    </div>
+                    <div class="score-inputs">
+                        <div class="score-group">
+                            <label class="score-label">現在</label>
+                            <select id="current-${cat.key}">
+                                ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => 
+                                    `<option value="${i}">${i}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        <div class="score-group">
+                            <label class="score-label">理想</label>
+                            <select id="ideal-${cat.key}">
+                                ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => 
+                                    `<option value="${i}">${i}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(item);
+                
+                // セレクトに値を設定してイベントリスナーを追加
+                const currentSelect = item.querySelector(`#current-${cat.key}`);
+                const idealSelect = item.querySelector(`#ideal-${cat.key}`);
+                
+                currentSelect.value = scores[cat.key].current;
+                idealSelect.value = scores[cat.key].ideal;
+                
+                currentSelect.addEventListener('change', (e) => {
+                    updateScore(cat.key, 'current', e.target.value);
+                });
+                
+                idealSelect.addEventListener('change', (e) => {
+                    updateScore(cat.key, 'ideal', e.target.value);
+                });
+            });
+        }
 
-function createInputGrid() {
-const grid = document.getElementById('inputGrid');
-grid.innerHTML = '';
+        function updateScore(key, type, value) {
+            scores[key][type] = parseInt(value);
+            updateChart();
+            updateStats();
+        }
 
-categories.forEach(cat => {
-const item = document.createElement('div');
-item.className = 'input-item';
-item.innerHTML = `
-<div class="input-header">
-<span class="input-icon">${cat.icon}</span>
-<label class="input-label">${cat.label}</label>
-</div>
-<div class="score-inputs">
-<div class="score-group">
-<label class="score-label">現在</label>
-<select id="current-${cat.key}">
-${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i =>
-`<option value="${i}">${i}</option>`
-).join('')}
-</select>
-</div>
-<div class="score-group">
-<label class="score-label">理想</label>
-<select id="ideal-${cat.key}">
-${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i =>
-`<option value="${i}">${i}</option>`
-).join('')}
-</select>
-</div>
-</div>
-`;
-grid.appendChild(item);
+        function resetScores() {
+            scores = JSON.parse(JSON.stringify(defaultScores));
+            createInputGrid();
+            updateChart();
+            updateStats();
+        }
 
-// セレクトに値を設定してイベントリスナーを追加
-const currentSelect = item.querySelector(`#current-${cat.key}`);
-const idealSelect = item.querySelector(`#ideal-${cat.key}`);
+        function calculateRadarPoints(scoreType) {
+            const angles = categories.map((_, i) => (i * 2 * Math.PI) / categories.length);
+            const radius = 120;
 
-currentSelect.value = scores[cat.key].current;
-idealSelect.value = scores[cat.key].ideal;
+            return angles.map((angle, i) => {
+                const score = scores[categories[i].key][scoreType];
+                const distance = (score / 10) * radius;
+                return {
+                    x: 200 + distance * Math.cos(angle - Math.PI / 2),
+                    y: 200 + distance * Math.sin(angle - Math.PI / 2),
+                };
+            });
+        }
 
-currentSelect.addEventListener('change', (e) => {
-updateScore(cat.key, 'current', e.target.value);
-});
+        function createPolygonPath(points) {
+            return points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
+        }
 
-idealSelect.addEventListener('change', (e) => {
-updateScore(cat.key, 'ideal', e.target.value);
-});
-});
-}
+        function updateChart() {
+            const svg = document.getElementById('radarChart');
+            const currentPoints = calculateRadarPoints('current');
+            const idealPoints = calculateRadarPoints('ideal');
 
-function updateScore(key, type, value) {
-scores[key][type] = parseInt(value);
-updateChart();
-updateStats();
-}
+            svg.innerHTML = `
+                <!-- Grid circles -->
+                ${[1, 2, 3, 4, 5].map(i => 
+                    `<circle cx="200" cy="200" r="${24 * i}" fill="none" stroke="#e2e8f0" stroke-width="1"/>`
+                ).join('')}
 
-function resetScores() {
-scores = JSON.parse(JSON.stringify(defaultScores));
-createInputGrid();
-updateChart();
-updateStats();
-}
+                <!-- Grid labels -->
+                ${[2, 4, 6, 8, 10].map((num, i) => 
+                    `<text x="200" y="${200 - 24 * (i + 1) - 8}" text-anchor="middle" font-size="12" fill="#cbd5e1" font-weight="300">${num}</text>`
+                ).join('')}
 
-function calculateRadarPoints(scoreType) {
-const angles = categories.map((_, i) => (i * 2 * Math.PI) / categories.length);
-const radius = 120;
+                <!-- Axes -->
+                ${categories.map((_, i) => {
+                    const angle = (i * 2 * Math.PI) / categories.length;
+                    const x = 200 + 130 * Math.cos(angle - Math.PI / 2);
+                    const y = 200 + 130 * Math.sin(angle - Math.PI / 2);
+                    return `<line x1="200" y1="200" x2="${x}" y2="${y}" stroke="#cbd5e1" stroke-width="0.5"/>`;
+                }).join('')}
 
-return angles.map((angle, i) => {
-const score = scores[categories[i].key][scoreType];
-const distance = (score / 10) * radius;
-return {
-x: 200 + distance * Math.cos(angle - Math.PI / 2),
-y: 200 + distance * Math.sin(angle - Math.PI / 2),
-};
-});
-}
+                <!-- Ideal polygon -->
+                <path d="${createPolygonPath(idealPoints)}" fill="#fbbf24" fill-opacity="0.08" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,4"/>
 
-function createPolygonPath(points) {
-return points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
-}
+                <!-- Current polygon -->
+                <path d="${createPolygonPath(currentPoints)}" fill="#3b82f6" fill-opacity="0.1" stroke="#3b82f6" stroke-width="2.5"/>
 
-function updateChart() {
-const svg = document.getElementById('radarChart');
-const currentPoints = calculateRadarPoints('current');
-const idealPoints = calculateRadarPoints('ideal');
+                <!-- Current dots -->
+                ${currentPoints.map((point, i) => 
+                    `<circle cx="${point.x}" cy="${point.y}" r="5" fill="#3b82f6" stroke="white" stroke-width="2"/>`
+                ).join('')}
 
-svg.innerHTML = `
-<!-- Grid circles -->
-${[1, 2, 3, 4, 5].map(i =>
-`<circle cx="200" cy="200" r="${24 * i}" fill="none" stroke="#e2e8f0" stroke-width="1"/>`
-).join('')}
+                <!-- Ideal dots -->
+                ${idealPoints.map((point, i) => 
+                    `<circle cx="${point.x}" cy="${point.y}" r="4" fill="none" stroke="#fbbf24" stroke-width="2"/>`
+                ).join('')}
 
-<!-- Grid labels -->
-${[2, 4, 6, 8, 10].map((num, i) =>
-`<text x="200" y="${200 - 24 * (i + 1) - 8}" text-anchor="middle" font-size="12" fill="#cbd5e1" font-weight="300">${num}</text>`
-).join('')}
+                <!-- Category labels with text -->
+                ${categories.map((cat, i) => {
+                    const angle = (i * 2 * Math.PI) / categories.length;
+                    const labelDistance = 165;
+                    const x = 200 + labelDistance * Math.cos(angle - Math.PI / 2);
+                    const y = 200 + labelDistance * Math.sin(angle - Math.PI / 2);
+                    
+                    const words = cat.label.split('、');
+                    const line1 = words[0] || '';
+                    const line2 = words[1] || '';
+                    
+                    return `
+                        <g text-anchor="middle">
+                            <text x="${x}" y="${y - 12}" font-size="16" font-weight="bold">${cat.icon}</text>
+                            <text x="${x}" y="${y + 8}" font-size="11" fill="#475569" font-weight="600">${line1}</text>
+                            ${line2 ? `<text x="${x}" y="${y + 22}" font-size="11" fill="#475569" font-weight="600">${line2}</text>` : ''}
+                        </g>
+                    `;
+                }).join('')}
+            `;
+        }
 
-<!-- Axes -->
-${categories.map((_, i) => {
-const angle = (i * 2 * Math.PI) / categories.length;
-const x = 200 + 130 * Math.cos(angle - Math.PI / 2);
-const y = 200 + 130 * Math.sin(angle - Math.PI / 2);
-return `<line x1="200" y1="200" x2="${x}" y2="${y}" stroke="#cbd5e1" stroke-width="0.5"/>`;
-}).join('')}
+        function updateStats() {
+            const gaps = categories.map(cat => 
+                Math.abs(scores[cat.key].current - scores[cat.key].ideal)
+            );
+            const balanceScore = Math.round(100 - (gaps.reduce((a, b) => a + b, 0) / (categories.length * 10)) * 100);
+            const averageScore = Math.round(
+                Object.values(scores).reduce((sum, s) => sum + s.current, 0) / categories.length
+            );
 
-<!-- Ideal polygon -->
-<path d="${createPolygonPath(idealPoints)}" fill="#fbbf24" fill-opacity="0.08" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,4"/>
+            document.getElementById('balanceScore').textContent = balanceScore;
+            document.getElementById('averageScore').textContent = averageScore;
+        }
 
-<!-- Current polygon -->
-<path d="${createPolygonPath(currentPoints)}" fill="#3b82f6" fill-opacity="0.1" stroke="#3b82f6" stroke-width="2.5"/>
-
-<!-- Current dots -->
-${currentPoints.map((point, i) =>
-`<circle cx="${point.x}" cy="${point.y}" r="5" fill="#3b82f6" stroke="white" stroke-width="2"/>`
-).join('')}
-
-<!-- Ideal dots -->
-${idealPoints.map((point, i) =>
-`<circle cx="${point.x}" cy="${point.y}" r="4" fill="none" stroke="#fbbf24" stroke-width="2"/>`
-).join('')}
-
-<!-- Category labels with text -->
-${categories.map((cat, i) => {
-const angle = (i * 2 * Math.PI) / categories.length;
-const labelDistance = 165;
-const x = 200 + labelDistance * Math.cos(angle - Math.PI / 2);
-const y = 200 + labelDistance * Math.sin(angle - Math.PI / 2);
-
-const words = cat.label.split('、');
-const line1 = words[0] || '';
-const line2 = words[1] || '';
-
-return `
-<g text-anchor="middle">
-<text x="${x}" y="${y - 12}" font-size="16" font-weight="bold">${cat.icon}</text>
-<text x="${x}" y="${y + 8}" font-size="11" fill="#475569" font-weight="600">${line1}</text>
-${line2 ? `<text x="${x}" y="${y + 22}" font-size="11" fill="#475569" font-weight="600">${line2}</text>` : ''}
-</g>
-`;
-}).join('')}
-`;
-}
-
-function updateStats() {
-const gaps = categories.map(cat =>
-Math.abs(scores[cat.key].current - scores[cat.key].ideal)
-);
-const balanceScore = Math.round(100 - (gaps.reduce((a, b) => a + b, 0) / (categories.length * 10)) * 100);
-const averageScore = Math.round(
-Object.values(scores).reduce((sum, s) => sum + s.current, 0) / categories.length
-);
-
-document.getElementById('balanceScore').textContent = balanceScore;
-document.getElementById('averageScore').textContent = averageScore;
-}
-
-// Initialize
-createInputGrid();
-updateChart();
-updateStats();
-</script>
-```
-
+        // Initialize
+        createInputGrid();
+        updateChart();
+        updateStats();
+    </script>
 </body>
 </html>
